@@ -18,6 +18,7 @@
     label { display:grid; min-width:0; gap:6px; font-weight:650; }
     input, select, button { font:inherit; }
     input, select { width:100%; padding:10px 11px; border:1px solid #b9c8d5; border-radius:9px; color:var(--ink); background:#fff; }
+    input[type=date] { display:block; inline-size:100%; width:100%; min-width:0; max-width:100%; overflow:hidden; }
     input[type=checkbox] { width:auto; accent-color:var(--blue); }
     button { border:0; border-radius:9px; padding:10px 15px; font-weight:700; cursor:pointer; background:var(--blue); color:#fff; }
     button.secondary { background:#e8f1f8; color:var(--ink); }
@@ -53,7 +54,9 @@
     @media (max-width:720px) {
       main { width:min(100% - 24px,1120px); margin:18px auto 40px; }
       .panel { padding:16px; border-radius:13px; }
-      .controls { grid-template-columns:1fr 1fr; }
+      .controls { grid-template-columns:minmax(0,1fr); }
+      .controls > label { width:100%; min-width:0; max-width:100%; overflow:hidden; }
+      input[type=date] { -webkit-appearance:none; appearance:none; inline-size:100%; width:100%; min-width:0; max-width:100%; }
       input, select, button { min-width:0; max-width:100%; min-height:44px; }
       .actions button { flex:1 1 145px; }
       .table-wrap { overflow:visible; }
