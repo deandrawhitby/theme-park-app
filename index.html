@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theme Park Price Comparator</title>
+  <style>
+    :root { --ink:#183153; --blue:#1775d1; --pale:#eef7ff; --line:#d8e2eb; --green:#157a52; }
+    * { box-sizing:border-box; }
+    [hidden] { display:none !important; }
+    body { margin:0; font:16px/1.45 system-ui,-apple-system,sans-serif; color:var(--ink); background:#f6f8fb; }
+    main { width:min(1120px,94%); margin:32px auto 64px; }
+    h1 { margin:0 0 4px; font-size:clamp(1.8rem,4vw,2.7rem); }
+    h2 { margin:0 0 16px; font-size:1.25rem; }
+    .sub { margin:0 0 24px; color:#557086; }
+    .panel { background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; margin:16px 0; box-shadow:0 6px 24px #19324d0d; }
+    .controls { display:grid; grid-template-columns:repeat(4,minmax(130px,1fr)); gap:12px; }
+    label { display:grid; gap:6px; font-weight:650; }
+    input, select, button { font:inherit; }
+    input, select { width:100%; padding:10px 11px; border:1px solid #b9c8d5; border-radius:9px; color:var(--ink); background:#fff; }
+    input[type=checkbox] { width:auto; accent-color:var(--blue); }
+    button { border:0; border-radius:9px; padding:10px 15px; font-weight:700; cursor:pointer; background:var(--blue); color:#fff; }
+    button.secondary { background:#e8f1f8; color:var(--ink); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; align-items:end; }
+    .table-wrap { overflow:auto; }
+    table { width:100%; border-collapse:collapse; min-width:940px; }
+    th, td { padding:11px 9px; border-bottom:1px solid var(--line); text-align:right; vertical-align:middle; }
+    th:first-child, td:first-child { text-align:left; min-width:250px; }
+    th { font-size:.83rem; text-transform:uppercase; letter-spacing:.035em; color:#547087; }
+    td input { min-width:88px; }
+    .total { font-weight:800; color:var(--green); white-space:nowrap; }
+    tr.closed { background:#f2f4f6; color:#788995; }
+    .closed-label { color:#9b2c2c; font-weight:850; }
+    .option-summary { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .pill { padding:6px 10px; border-radius:999px; background:#edf2f6; color:#526b7e; font-size:.84rem; font-weight:750; }
+    .pill.on { background:#e5f8ef; color:#116943; }
+    .chart { display:grid; gap:12px; }
+    .bar-row { display:grid; width:100%; grid-template-columns:minmax(180px,280px) 1fr 90px; gap:10px; align-items:center; padding:9px; color:var(--ink); background:transparent; text-align:left; }
+    .bar-row:hover, .bar-row:focus-visible, .bar-row[aria-expanded="true"] { background:var(--pale); outline:none; }
+    .track { height:22px; background:#e9eff4; border-radius:999px; overflow:hidden; }
+    .bar { height:100%; background:linear-gradient(90deg,#26a7db,var(--blue)); border-radius:999px; min-width:3px; }
+    .chart-detail { margin-top:4px; padding:16px; border:1px solid #acd0ed; border-radius:12px; background:#f5faff; }
+    .chart-detail h3 { margin:0 0 12px; }
+    .detail-grid { display:grid; grid-template-columns:repeat(3,minmax(120px,1fr)); gap:12px; }
+    .detail-item { display:grid; gap:3px; }
+    .detail-item span { color:#60798d; font-size:.78rem; font-weight:750; text-transform:uppercase; }
+    .detail-item strong { font-size:1.05rem; }
+    .status { min-height:24px; margin:10px 0 0; color:#557086; }
+    small { color:#60798d; font-weight:400; }
+    @media (max-width:720px) {
+      main { width:min(100% - 24px,1120px); margin:18px auto 40px; }
+      .panel { padding:16px; border-radius:13px; }
+      .controls { grid-template-columns:1fr 1fr; }
+      input, select, button { min-height:44px; }
+      .actions button { flex:1 1 145px; }
+      .table-wrap { overflow:visible; }
+      table { min-width:0; display:block; }
+      thead { display:none; }
+      tbody { display:grid; gap:14px; }
+      tr { display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; padding:15px; border:1px solid var(--line); border-radius:12px; background:#fff; }
+      td, td:first-child { display:grid; gap:5px; min-width:0; padding:0; border:0; text-align:left; }
+      td::before { content:attr(data-label); color:#60798d; font-size:.72rem; font-weight:750; letter-spacing:.035em; text-transform:uppercase; }
+      td:first-child { grid-column:1 / -1; font-size:1.02rem; font-weight:800; padding-bottom:4px; }
+      td:first-child::before { display:none; }
+      td input { min-width:0; }
+      .total { white-space:normal; }
+      .bar-row { grid-template-columns:1fr 68px; gap:6px 10px; font-size:.84rem; }
+      .bar-row > span { font-weight:650; }
+      .track { grid-column:1 / -1; grid-row:2; height:16px; }
+      .bar-row > strong { grid-column:2; grid-row:1; text-align:right; }
+      .detail-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:440px) {
+      .controls { grid-template-columns:1fr; }
+      tr { grid-template-columns:1fr; }
+      td:first-child { grid-column:1; }
+      h1 { font-size:1.75rem; }
+      .detail-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Theme Park Price Comparator</h1>
+  <p class="sub">Compare dated theme-park costs for the whole family.</p>
+
+  <section class="panel">
+    <h2>Family & options</h2>
+    <div class="controls">
+      <label>Guests<input id="guests" type="number" min="0" value="3"></label>
+      <label>Price date<input id="priceDate" type="date"></label>
+    </div>
+    <div class="actions">
+      <label><span><input id="includeMeals" type="checkbox"> Include meals</span></label>
+      <label><span><input id="includeFast" type="checkbox"> Include line skipping</span></label>
+      <label><span><input id="includeParking" type="checkbox" checked> Include parking</span></label>
+    </div>
+    <div id="optionSummary" class="option-summary" aria-live="polite"></div>
+    <p id="status" class="status" aria-live="polite"></p>
+  </section>
+
+  <section class="panel"><h2>Visual comparison <small>— select an option for calculated details</small></h2><div id="chart" class="chart"></div></section>
+
+</main>
+<script>
+const defaults = [
+  ["SeaWorld (1 Day)",43.99,36,40,50],
+  ["Aquatica (1 Day)",44.99,36,25,0],
+  ["SeaWorld + Aquatica (1 Day)",88.98,36,65,50],
+  ["SeaWorld + Aquatica (Season Pass)",99.99,0,0,0],
+  ["Fiesta Texas (1 Day)",49,20,20,40],
+  ["Fiesta Texas + Hurricane Harbor (1 Day)",59,20,20,40],
+  ["Schlitterbahn (1 Day)",59,20,10,49],
+  ["Fiesta Texas + Schlitterbahn - Gold Pass (Season Pass)",95,0,0,0]
+].map(([name,ticketPrice,parking,meal,fastPass])=>({name,ticketPrice,parking,meal,fastPass}));
+let parks = structuredClone(defaults);
+let expandedIndex = null;
+const $ = id => document.getElementById(id);
+const hostedInAppsScript = typeof google !== 'undefined' && google.script && google.script.run;
+const API_URL = 'https://script.google.com/macros/s/AKfycbxzbfuOqSAnpABPJEl24noqkiJ_Du2e6yFiw6ovnO2MxOVj2PYod8UPo6yjfY7sbucDxQ/exec';
+const money = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n || 0);
+const num = v => Math.max(0, Number(v) || 0);
+$('priceDate').value = new Date().toISOString().slice(0,10);
+
+function totals(p){
+  const people=num($('guests').value);
+  if(p.closed) return {ticketTotal:0,selected:0,closed:true};
+  const ticketTotal=p.ticketPrice*people;
+  return {ticketTotal, selected:ticketTotal+($('includeParking').checked?p.parking:0)+($('includeMeals').checked?p.meal*people:0)+($('includeFast').checked?p.fastPass*people:0)};
+}
+function render(){
+  refreshCalculations();
+}
+function refreshCalculations(){
+  const computed=parks.map(totals);
+  $('optionSummary').innerHTML=`<span class="pill ${$('includeParking').checked?'on':''}">Parking: ${$('includeParking').checked?'included':'not included'}</span><span class="pill ${$('includeMeals').checked?'on':''}">Meals: ${$('includeMeals').checked?'included':'not included'}</span><span class="pill ${$('includeFast').checked?'on':''}">Line skipping: ${$('includeFast').checked?'included':'not included'}</span>`;
+  const entries=parks.map((p,i)=>({p,t:computed[i]})), open=entries.filter(x=>!x.t.closed);
+  const max=Math.max(1,...open.map(x=>x.t.selected));
+  $('chart').innerHTML=entries.map(x=>{const i=parks.indexOf(x.p);return `<div><button type="button" class="bar-row" ${x.t.closed?'disabled':''} data-expand-index="${i}" aria-expanded="${expandedIndex===i}"><span>${x.p.name}</span><div class="track"><div class="bar" style="width:${x.t.closed?0:x.t.selected/max*100}%"></div></div><strong>${x.t.closed?'Closed':money(x.t.selected)}</strong></button>${expandedIndex===i?expandedDetails(x.p,x.t):''}</div>`}).join('');
+}
+function expandedDetails(p,t){
+  const items=[['Ticket price per person',money(p.ticketPrice)],['Calculated family ticket total',money(t.ticketTotal)]];
+  if($('includeParking').checked) items.push(['Parking',money(p.parking)]);
+  if($('includeMeals').checked) items.push(['Meal / person',money(p.meal)]);
+  if($('includeFast').checked) items.push(['Line skip / person',money(p.fastPass)]);
+  items.push(['Calculated family total',money(t.selected)]);
+  return `<div class="chart-detail"><div class="detail-grid">${items.map(x=>`<div class="detail-item"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('')}</div></div>`;
+}
+$('chart').addEventListener('click',e=>{const button=e.target.closest('[data-expand-index]');if(!button)return;const i=Number(button.dataset.expandIndex);expandedIndex=expandedIndex===i?null:i;refreshCalculations();});
+function setStatus(s){ $('status').textContent=s; }
+async function load(){
+  const date=$('priceDate').value; let data=null;
+  if(hostedInAppsScript){ try{ const remote=await gasCall('getSnapshot',date); if(remote?.parks?.length)data=remote; }catch(e){} }
+  else { try{ const response=await fetch(`${API_URL}?api=1&date=${encodeURIComponent(date)}`); const remote=await response.json(); if(remote?.parks?.length)data=remote; }catch(e){ setStatus('Could not reach the price spreadsheet; showing presets.'); } }
+  if(!data?.parks?.length){ parks=structuredClone(defaults); render(); setStatus(`No saved prices for ${date}; showing the preset prices.`); return; }
+  const byName=Object.fromEntries(data.parks.map(p=>[p.name,p]));
+  parks=defaults.map(p=>({...p,...(byName[p.name]||{}),ticketPrice:num((byName[p.name]||p).ticketPrice)}));
+  render(); setStatus(`Loaded prices for ${date}.`);
+}
+function gasCall(name,arg){ return new Promise((resolve,reject)=>google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[name](arg)); }
+$('priceDate').addEventListener('change',load);
+['guests','includeParking','includeMeals','includeFast'].forEach(id=>$(id).addEventListener('change',refreshCalculations));
+render(); load();
+</script>
+</body>
+</html>
