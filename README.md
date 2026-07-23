@@ -11,7 +11,7 @@ A mobile-friendly price calculator for any number of guests and editable extras.
 
 Park prices are display-only and load from the connected Google Sheet. Dates without imported rows use the presets.
 
-Select any visual-comparison row to expand its details immediately below that option. Calculated values are explicitly labeled **Calculated family ticket total** and **Calculated family total**. Select the option again to collapse it; there is no separate price table.
+Select any visual-comparison row to expand its details immediately below that option. **Family ticket total** and **Family total** appear in a separate green summary area—on the right on wider screens and beneath the itemized costs on phones. Select the option again to collapse it; there is no separate price table.
 
 ## Publish as a Google Apps Script web app
 

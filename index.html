@@ -39,12 +39,15 @@
     .bar-row:hover, .bar-row:focus-visible, .bar-row[aria-expanded="true"] { background:var(--pale); outline:none; }
     .track { height:22px; background:#e9eff4; border-radius:999px; overflow:hidden; }
     .bar { height:100%; background:linear-gradient(90deg,#26a7db,var(--blue)); border-radius:999px; min-width:3px; }
-    .chart-detail { margin-top:4px; padding:16px; border:1px solid #acd0ed; border-radius:12px; background:#f5faff; }
+    .chart-detail { display:grid; grid-template-columns:1fr minmax(240px,320px); gap:16px; margin-top:4px; padding:16px; border:1px solid #acd0ed; border-radius:12px; background:#f5faff; }
     .chart-detail h3 { margin:0 0 12px; }
-    .detail-grid { display:grid; grid-template-columns:repeat(3,minmax(120px,1fr)); gap:12px; }
+    .detail-grid { display:grid; grid-template-columns:repeat(2,minmax(120px,1fr)); gap:12px; align-content:start; }
     .detail-item { display:grid; gap:3px; }
     .detail-item span { color:#60798d; font-size:.78rem; font-weight:750; text-transform:uppercase; }
     .detail-item strong { font-size:1.05rem; }
+    .calculated-box { display:grid; gap:14px; align-content:center; padding:16px; border-radius:10px; background:#dff5e9; border:1px solid #a8ddc1; }
+    .calculated-box .detail-item span { color:#376a53; }
+    .calculated-box .detail-item strong { color:#116943; font-size:1.25rem; }
     .status { min-height:24px; margin:10px 0 0; color:#557086; }
     small { color:#60798d; font-weight:400; }
     @media (max-width:720px) {
@@ -68,6 +71,7 @@
       .bar-row > span { font-weight:650; }
       .track { grid-column:1 / -1; grid-row:2; height:16px; }
       .bar-row > strong { grid-column:2; grid-row:1; text-align:right; }
+      .chart-detail { grid-template-columns:1fr; }
       .detail-grid { grid-template-columns:1fr 1fr; }
     }
     @media (max-width:440px) {
@@ -139,12 +143,13 @@ function refreshCalculations(){
   $('chart').innerHTML=entries.map(x=>{const i=parks.indexOf(x.p);return `<div><button type="button" class="bar-row" ${x.t.closed?'disabled':''} data-expand-index="${i}" aria-expanded="${expandedIndex===i}"><span>${x.p.name}</span><div class="track"><div class="bar" style="width:${x.t.closed?0:x.t.selected/max*100}%"></div></div><strong>${x.t.closed?'Closed':money(x.t.selected)}</strong></button>${expandedIndex===i?expandedDetails(x.p,x.t):''}</div>`}).join('');
 }
 function expandedDetails(p,t){
-  const items=[['Ticket price per person',money(p.ticketPrice)],['Calculated family ticket total',money(t.ticketTotal)]];
+  const items=[['Ticket price per person',money(p.ticketPrice)]];
   if($('includeParking').checked) items.push(['Parking',money(p.parking)]);
   if($('includeMeals').checked) items.push(['Meal / person',money(p.meal)]);
   if($('includeFast').checked) items.push(['Line skip / person',money(p.fastPass)]);
-  items.push(['Calculated family total',money(t.selected)]);
-  return `<div class="chart-detail"><div class="detail-grid">${items.map(x=>`<div class="detail-item"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('')}</div></div>`;
+  const totals=[['Family ticket total',money(t.ticketTotal)],['Family total',money(t.selected)]];
+  const cells=list=>list.map(x=>`<div class="detail-item"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('');
+  return `<div class="chart-detail"><div class="detail-grid">${cells(items)}</div><div class="calculated-box">${cells(totals)}</div></div>`;
 }
 $('chart').addEventListener('click',e=>{const button=e.target.closest('[data-expand-index]');if(!button)return;const i=Number(button.dataset.expandIndex);expandedIndex=expandedIndex===i?null:i;refreshCalculations();});
 function setStatus(s){ $('status').textContent=s; }
