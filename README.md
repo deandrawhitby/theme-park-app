@@ -56,7 +56,7 @@ Run `importAllProvidedPrices` from the Apps Script function menu to:
 
 The import updates matching park/date rows without deleting other options. SeaWorld parking is $36; Fiesta Texas and Schlitterbahn parking are $20. The Gold Pass preset is $95. The page merges dated spreadsheet rows with its fixed-price presets, so season passes and other options remain visible.
 
-Aquatica is listed as its own one-day ticket. **SeaWorld + Aquatica (1 Day)** is a calculated comparison equal to both dated ticket prices added together; it is not an official one-day bundle. Parking is charged once using the higher applicable parking amount. Selected meal and line-skipping add-ons are summed across both parks. The SeaWorld + Aquatica season pass remains available.
+The standalone Aquatica one-day card is currently commented out, while its dated data remains available for calculations. **SeaWorld + Aquatica (1 Day)** is a calculated comparison equal to both dated ticket prices added together; it is not an official one-day bundle. Parking is charged once using the higher applicable parking amount. Selected meal and line-skipping add-ons are summed across both parks. The SeaWorld + Aquatica season pass remains available.
 
 Dates explicitly marked `IsClosed: true` in the supplied SeaWorld or Aquatica JSON display **Closed** instead of a price and are excluded from the chart. The calculated SeaWorld + Aquatica option is closed if either park is closed. Six Flags and Schlitterbahn are not marked closed unless their supplied data explicitly identifies a closure; missing dates are not assumed to be closed.
 

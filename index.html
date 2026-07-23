@@ -15,7 +15,7 @@
     .sub { margin:0 0 24px; color:#557086; }
     .panel { background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; margin:16px 0; box-shadow:0 6px 24px #19324d0d; }
     .controls { display:grid; grid-template-columns:repeat(4,minmax(130px,1fr)); gap:12px; }
-    label { display:grid; gap:6px; font-weight:650; }
+    label { display:grid; min-width:0; gap:6px; font-weight:650; }
     input, select, button { font:inherit; }
     input, select { width:100%; padding:10px 11px; border:1px solid #b9c8d5; border-radius:9px; color:var(--ink); background:#fff; }
     input[type=checkbox] { width:auto; accent-color:var(--blue); }
@@ -54,7 +54,7 @@
       main { width:min(100% - 24px,1120px); margin:18px auto 40px; }
       .panel { padding:16px; border-radius:13px; }
       .controls { grid-template-columns:1fr 1fr; }
-      input, select, button { min-height:44px; }
+      input, select, button { min-width:0; max-width:100%; min-height:44px; }
       .actions button { flex:1 1 145px; }
       .table-wrap { overflow:visible; }
       table { min-width:0; display:block; }
@@ -103,7 +103,7 @@
     <p id="status" class="status" aria-live="polite"></p>
   </section>
 
-  <section class="panel"><h2>Visual comparison <small>— select an option for calculated details</small></h2><div id="chart" class="chart"></div></section>
+  <section class="panel"><h2>Prices</h2><div id="chart" class="chart"></div></section>
 
 </main>
 <script>
